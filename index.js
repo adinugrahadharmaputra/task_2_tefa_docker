@@ -1,11 +1,21 @@
 const express = require('express');
+const redis = require('redis');
 
 const app = express();
+const client = redis.createClient();
+client.set('counter', 0);
+
+const PORT = 4001;
 
 app.get('/',(req,res) => {
-  res.send('Counter');
+  client.get('counter', (err, reply) => {
+    res.send("Page Visitor Counter : " + reply);
+    client.set('counter', parseInt(reply) +1 );
+  });
 });
-  
-app.listen(4001, () =>{
-  console.log("Listening on port "+ 4001);
+
+
+
+app.listen(PORT, () =>{
+  console.log("Listening on port "+ PORT);
 });
